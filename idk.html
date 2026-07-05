@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SEVEN REFLECTIONS // စိတ်မှန်ပြောင်းအလင်းပြန်ခြင်း</title>
+    <style>
+        :root {
+            --bg-base: #05050a;
+            --bg-surface: rgba(11, 11, 18, 0.85);
+            --border-glow: #1a1a30;
+            --accent-blue: #00f0ff;
+            --accent-purple: #9d4edd;
+            --accent-crimson: #ff2a5f;
+            --text-main: #f1f1f7;
+            --text-muted: #7e7e9c;
+            --font-mm: "Pyidaungsu", "Padauk", "Noto Sans Myanmar", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        /* BACKGROUND CINEMATIC MATRIX EFFECT */
+        #ambient-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0d0b21 0%, var(--bg-base) 100%);
+        }
+        .matrix-lines {
+            position: absolute; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* STRUCTURAL RESPONSIVE WRAPPER */
+        .app-container {
+            max-width: 760px;
+            width: 100%;
+            margin: auto;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 35px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 40px rgba(157, 78, 221, 0.03);
+        }
+
+        /* VIEWPORT SCREEN STAGES HANDLING */
+        .app-screen { display: none; }
+        .active-screen { display: block; animation: smoothFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes smoothFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TYPOGRAPHY PARADIGM */
+        .lang-en { font-size: 1.15rem; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 2px; }
+        .lang-mm { font-family: var(--font-mm); font-size: 0.9rem; color: var(--text-muted); display: block; line-height: 1.6; }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            background: linear-gradient(90deg, #ffffff, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* GLOWING OPTION TILES */
+        .option-tile {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .option-tile:hover {
+            background: rgba(0, 240, 255, 0.04);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            transform: scale(1.01);
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            color: #030307;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 32px;
+            cursor: pointer;
+            font-family: monospace;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* INTERACTIVE HUD METERS */
+        .hud-metrics { display: flex; justify-content: space-between; font-family: monospace; font-size: 0.85rem; color: var(--accent-blue); margin-bottom: 12px; }
+        .bar-track { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.04); border-radius: 3px; overflow: hidden; margin-bottom: 25px; }
+        .bar-fill { height: 100%; width: 0%; background: var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue); transition: width 0.25s linear; }
+
+        /* OUTPUT STYLING ARCHITECTURE */
+        .top-traits-deck { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        @media (max-width: 600px) { .top-traits-deck { grid-template-columns: 1fr; } }
+        
+        .dominant-badge {
+            background: rgba(157, 78, 221, 0.06);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            border-radius: 14px; padding: 15px; text-align: center;
+        }
+        
+        .stat-chart-item { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+        .stat-label-row { display: flex; justify-content: space-between; font-size: 0.8rem; font-family: monospace; }
+        .stat-fill-node { height: 6px; border-radius: 3px; background: var(--accent-purple); width: 0%; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .analysis-block { border-left: 2px solid var(--accent-blue); padding-left: 15px; margin-bottom: 25px; }
+        .guide-block { background: rgba(0, 240, 255, 0.01); border: 1px solid var(--border-glow); padding: 18px; border-radius: 12px; margin-bottom: 20px; }
+
+        /* MANDATORY CREATOR FOOTER SIGNATURE */
+        footer {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-glow);
+            background: rgba(3, 3, 6, 0.9);
+            z-index: 10;
+        }
+        .signature-msg { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; }
+        .signature-msg strong { color: var(--text-main); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="ambient-grid"><div class="matrix-lines"></div></div>
+
+    <div class="app-container">
+        
+        <!-- MODULE 1: LANDING ACCESS -->
+        <div class="glass-card app-screen active-screen" id="screen-welcome" style="text-align: center;">
+            <header style="margin-bottom: 25px;">
+                <h1>The Seven Reflections</h1>
+                <p style="font-family: var(--font-mm); font-size: 0.9rem; color: var(--accent-blue); margin-top: 4px;">စိတ်မှန်ပြောင်းအလင်းပြန်ခြင်း ဆန်းစစ်ချက်</p>
+            </header>
+            
+            <div style="margin-bottom: 30px;">
+                <span class="lang-en">Welcome, Guest. Initiate this rapid diagnostic module to chart your instinctual archetypes without friction.</span>
+                <span class="lang-mm">ဧည့်သည်တော်၊ မင်္ဂလာပါ။ သင်၏ပင်ကိုယ်စိတ်နေသဘောထားပုံစံများကို အနှောင့်အယှက်မရှိ လျင်မြန်စွာ ဆန်းစစ်ရန် ဤစနစ်ကို စတင်ပါ။</span>
+            </div>
+
+            <button class="btn-action" onclick="launchQuizCore()">Start Quiz // စတင်မည်</button>
+        </div>
+
+        <!-- MODULE 2: RUNTIME QUESTION MATRIX CORE -->
+        <div class="glass-card app-screen" id="screen-quiz">
+            <div class="hud-metrics">
+                <span id="hud-index-lbl">REFLECTION NODE: 01 / 25</span>
+                <span id="hud-percent-lbl">0%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="hud-progress-bar"></div></div>
+
+            <div style="margin-bottom: 25px;">
+                <h2 class="lang-en" id="active-q-en" style="font-size: 1.3rem;">...</h2>
+                <h3 class="lang-mm" id="active-q-mm" style="font-weight: normal; color: var(--text-muted);">...</h3>
+            </div>
+
+            <div id="active-options-deck">
+                <!-- 4 short options injected here natively -->
+            </div>
+        </div>
+
+        <!-- MODULE 3: ENGINE SOLVING LAYER -->
+        <div class="glass-card app-screen" id="screen-loading" style="text-align: center; padding: 50px 20px;">
+            <div style="font-size: 2.5rem; margin-bottom: 15px; animation: spinRotate 1.5s linear infinite;">⏳</div>
+            <span class="lang-en" style="color: var(--accent-blue);">Sifting refraction profiles...</span>
+            <span class="lang-mm">စိတ်အလင်းပြန်မှုပုံစံများကို တွက်ချက်နေပါသည်...</span>
+            <style>@keyframes spinRotate { to { transform: rotate(360deg); } }</style>
+        </div>
+
+        <!-- MODULE 4: DYNAMIC OUTPUT ASSESSMENT DISPLAY -->
+        <div class="glass-card app-screen" id="screen-results">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <span class="lang-en" style="text-transform: uppercase; font-family: monospace; color: var(--accent-blue); letter-spacing: 1px;">Primary Reflections Identified</span>
+                <h2 class="lang-en" id="dominant-traits-header" style="font-size: 1.7rem; color: #fff; margin-top: 5px;">...</h2>
+            </div>
+
+            <div class="top-traits-deck">
+                <div class="dominant-badge" id="badge-trait-1"></div>
+                <div class="dominant-badge" id="badge-trait-2"></div>
+            </div>
+
+            <div style="margin-bottom: 35px;">
+                <h3 class="lang-en" style="color: var(--accent-blue); font-size: 1rem; margin-bottom: 15px;">Full Trait Spectrum // စရိုက်လက္ခဏာများ အချိုးအစား</h3>
+                <div id="chart-insertion-point"></div>
+            </div>
+
+            <div class="analysis-block">
+                <h3 class="lang-en" style="color: var(--accent-purple); font-size: 1.1rem; margin-bottom: 5px;">Psychological Architecture // စိတ်နေသဘောထားဆန်းစစ်ချက်</h3>
+                <p class="lang-en" id="out-analysis-en" style="font-size: 0.95rem; line-height: 1.5; color: #e1e1e6;"></p>
+                <p class="lang-mm" id="out-analysis-mm" style="margin-top: 6px;"></p>
+            </div>
+
+            <div class="guide-block">
+                <h3 class="lang-en" style="color: var(--accent-blue); font-size: 1.05rem; margin-bottom: 6px;">Evolutionary Roadmap // ကိုယ်တိုင်မြှင့်တင်မှု လမ်းညွှန်</h3>
+                <p class="lang-en" id="out-guide-en" style="font-size: 0.9rem; line-height: 1.5; color: #e1e1e6;"></p>
+                <p class="lang-mm" id="out-guide-mm" style="margin-top: 6px;"></p>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn-action" onclick="revertToStart()">Analyze Again // ပြန်လည်စတင်မည်</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MANDATORY ATTACHED DISCLOSURE MARKER -->
+    <footer>
+        <div class="signature-msg">THE SEVEN REFLECTIONS EXPERIENTIAL SUITE CREATED BY <strong>no sponsor yet</strong></div>
+    </footer>
+
+    <script>
+        // COMPACT, HIGH-VELOCITY 25-QUESTION SPECIFICATION REGISTRY
+        const REGISTERED_QUESTIONS = [
+            { qEn: "Someone insults you directly. Your response?", qMm: "တစ်ဦးတစ်ယောက်က သင့်ကို တိုက်ရိုက်စော်ကားလျှင် ဘာလုပ်မလဲ။", opts: [
+                { en: "Correct them immediately.", mm: "ချက်ချင်းပြန်လည်တုံ့ပြန် ပြုပြင်ပေးမည်။", sc: { pride: 3 } },
+                { en: "Argue back fiercely.", mm: "ဒေါသတကြီး ပြန်လည်ပြောဆိုမည်။", sc: { wrath: 3 } },
+                { en: "Ignore and walk away.", mm: "လျစ်လျူရှုပြီး ထွက်သွားမည်။", sc: { sloth: 3 } },
+                { en: "Assess how to leverage it.", mm: "အခြေအနေကို အသုံးချရန် စဉ်းစားမည်။", sc: { greed: 3 } }
+            ]},
+            { qEn: "What do you chase most consistently?", qMm: "သင် ဘဝတွင် ဘာကို အဓိက အမြဲတမ်း လိုက်ရှာနေသနည်း။", opts: [
+                { en: "Unmatched respect and prestige.", mm: "အတုမဲ့ လေးစားမှုနှင့် ဂုဏ်သတင်း။", sc: { pride: 3 } },
+                { en: "Tangible financial resources.", mm: "ခိုင်မာသော ငွေကြေးဓန။", sc: { greed: 3 } },
+                { en: "Absolute comfort and leisure.", mm: "အကြွင်းမဲ့ သက်သောင့်သက်သာရှိမှု။", sc: { sloth: 3 } },
+                { en: "Deep sensory satisfaction.", mm: "ပြင်းပြသော အာရုံခံစားမှု။", sc: { lust: 3 } }
+            ]},
+            { qEn: "A peer achieves massive success unexpectedly.", qMm: "လုပ်ဖော်ကိုင်ဖက်တစ်ဦးက ရုတ်တရက် အောင်မြင်သွားသောအခါ?", opts: [
+                { en: "Feel happy but compare profiles.", mm: "ဝမ်းသာသော်လည်း မိမိနှင့် နှိုင်းယှဉ်မိသည်။", sc: { envy: 3 } },
+                { en: "Analyze their strategy to win.", mm: "အနိုင်ရရန် ၎င်းတို့၏ နည်းဗျူဟာကို လေ့လာမည်။", sc: { greed: 3 } },
+                { en: "Indifferent to their results.", mm: "၎င်းတို့၏ရလဒ်အပေါ် စိတ်ဝင်စားမှုမရှိပါ။", sc: { sloth: 3 } },
+                { en: "Know I will surpass them.", mm: "မိမိက ကျော်တက်မည်ကို သိနေသည်။", sc: { pride: 3 } }
+            ]},
+            { qEn: "How do you spend free weekends?", qMm: "လွတ်လပ်သော ပိတ်ရက်များကို မည်သို့ ကုန်လွန်စေသနည်း။", opts: [
+                { en: "Sleeping or doing nothing.", mm: "အိပ်စက်ခြင်း သို့မဟုတ် ဘာမှမလုပ်ခြင်း။", sc: { sloth: 3 } },
+                { en: "Indulging in finest feasts.", mm: "အကောင်းဆုံး စားသောက်မှုများ ခံစားခြင်း။", sc: { gluttony: 3 } },
+                { en: "Working toward asset accumulation.", mm: "ပိုင်ဆိုင်မှုတိုးပွားရေးအတွက် အလုပ်လုပ်ခြင်း။", sc: { greed: 3 } },
+                { en: "Polishing skillsets and crafts.", mm: "မိမိ၏ အရည်အချင်းကို မြှင့်တင်ခြင်း။", sc: { pride: 3 } }
+            ]},
+            { qEn: "When projects fail due to mistakes:", qMm: "အမှားများကြောင့် လုပ်ငန်းစဉ်တစ်ခု ပျက်စီးသွားသောအခါ -", opts: [
+                { en: "Frustration flares up fast.", mm: "ဒေါသစိတ်က အလျင်အမြန် ထွက်ပေါ်လာသည်။", sc: { wrath: 3 } },
+                { en: "Defend your personal approach.", mm: "မိမိ၏ လုပ်ဆောင်ပုံကို ကာကွယ်ပြောဆိုမည်။", sc: { pride: 3 } },
+                { en: "Abandon it and rest.", mm: "၎င်းကို စွန့်လွှတ်ပြီး အနားယူလိုက်မည်။", sc: { sloth: 3 } },
+                { en: "Calculate the net loss.", mm: "အသားတင် ဆုံးရှုံးမှုကို တွက်ချက်မည်။", sc: { greed: 3 } }
+            ]},
+            { qEn: "You receive an unexpected financial bonus:", qMm: "မမျှော်လင့်ဘဲ ငွေကြေးအပိုဆု ရရှိသောအခါ -", opts: [
+                { en: "Save every single coin.", mm: "တစ်ပြားမကျန် အကုန်စုဆောင်းမည်။", sc: { greed: 3 } },
+                { en: "Spend immediately on premium dining.", mm: "ကောင်းမွန်သော စားသောက်မှုတွင် ချက်ချင်းသုံးမည်။", sc: { gluttony: 3 } },
+                { en: "Purchase high-status luxury goods.", mm: "အဆင့်အတန်းမြင့် ဇိမ်ခံပစ္စည်းများ ဝယ်မည်။", sc: { pride: 3 } },
+                { en: "Store safely and rest easy.", mm: "လုံခြုံစွာ သိမ်းဆည်းပြီး အေးဆေးနေမည်။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "What triggers irritation most easily?", qMm: "သင့်ကို မည်သည့်အရာက အလွယ်တကူ စိတ်အနှောင့်အယှက်ဖြစ်စေသနည်း။", opts: [
+                { en: "Incompetence and systemic delays.", mm: "စွမ်းဆောင်ရည်မရှိခြင်းနှင့် ကြန့်ကြာမှုများ။", sc: { wrath: 3 } },
+                { en: "People disrespecting your boundaries.", mm: "မိမိ၏ စည်းဘောင်များကို ကျော်လွန်စော်ကားခြင်း။", sc: { pride: 3 } },
+                { en: "Demands requiring hard physical labor.", mm: "ပင်ပန်းသော ရုပ်ပိုင်းဆိုင်ရာ လုပ်ဆောင်မှုများ။", sc: { sloth: 3 } },
+                { en: "Seeing others take your shares.", mm: "အခြားသူများက မိမိဝေစုကို ယူသွားခြင်း။", sc: { envy: 3 } }
+            ]},
+            { qEn: "Your core emotional escape tool?", qMm: "စိတ်ဖိစီးမှုမှ လွတ်မြောက်ရန် အဓိက အသုံးပြုသည့်အရာ?", opts: [
+                { en: "Uninterrupted quiet solitary rest.", mm: "နှောင့်ယှက်မှုမရှိ တိတ်ဆိတ်စွာ အနားယူခြင်း။", sc: { sloth: 3 } },
+                { en: "Luxurious comfort food experiences.", mm: "ဇိမ်ခံ အရသာရှိသော အစားအစာများ။", sc: { gluttony: 3 } },
+                { en: "Immersing in intense personal desires.", mm: "ပြင်းပြသော ကိုယ်ပိုင်အလိုဆန္ဒများတွင် နစ်မြောခြင်း။", sc: { lust: 3 } },
+                { en: "Refining work and securing metrics.", mm: "အလုပ်များကို ပိုမိုကောင်းမွန်အောင် လုပ်ဆောင်ခြင်း။", sc: { greed: 3 } }
+            ]},
+            { qEn: "In competitive games, you find satisfaction in:", qMm: "ပြိုင်ဆိုင်မှုရှိသော ကစားပွဲများတွင် သင်ကျေနပ်မှုကို မည်သို့ရသနည်း။", opts: [
+                { en: "Complete tactical domination.", mm: "နည်းဗျူဟာပိုင်းအရ လုံးဝအနိုင်ယူခြင်း။", sc: { pride: 3 } },
+                { en: "Crushing opponents thoroughly.", mm: "ပြိုင်ဘက်ကို အပြတ်အသတ် ချေမှုန်းခြင်း။", sc: { wrath: 3 } },
+                { en: "Collecting rare in-game treasures.", mm: "ရှားပါးသော ရတနာများ စုဆောင်းခြင်း။", sc: { greed: 3 } },
+                { en: "Playing passively with low effort.", mm: "အားစိုက်ထုတ်မှု နည်းနည်းဖြင့်သာ ကစားခြင်း။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "How do you view guidelines and rules?", qMm: "စည်းမျဉ်းစည်းကမ်းများကို သင် မည်သို့ ရှုမြင်သနည်း။", opts: [
+                { en: "Tools below my tactical intuition.", mm: "မိမိ၏ ဆုံးဖြတ်ချက်အောက်၌သာ ရှိသောအရာများ။", sc: { pride: 3 } },
+                { en: "Obstacles that limit my acquisitions.", mm: "မိမိရရှိနိုင်မှုများကို ပိတ်ပင်တားဆီးသောအရာ။", sc: { greed: 3 } },
+                { en: "Annoying constraints that provoke me.", mm: "စိတ်တိုဒေါသထွက်စေသော ကန့်သတ်ချက်များ။", sc: { wrath: 3 } },
+                { en: "Convenient paths to avoid thinking.", mm: "စဉ်းစားရသက်သာစေသော လမ်းကြောင်းများ။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "When someone is clearly bragging:", qMm: "တစ်စုံတစ်ယောက်က သိသိသာသာ ကြွားလုံးထုတ်နေချိန်တွင် -", opts: [
+                { en: "Expose their flaws subtly.", mm: "၎င်းတို့၏ အားနည်းချက်ကို သိမ်မွေ့စွာ ဖော်ထုတ်မည်။", sc: { pride: 3 } },
+                { en: "Feel silent inner envy.", mm: "စိတ်ထဲမှ တိတ်တဆိတ် အားကျမနာလိုဖြစ်မိသည်။", sc: { envy: 3 } },
+                { en: "Tune out and daydream.", mm: "စိတ်မဝင်စားဘဲ အခြားအရာများကိုသာ တွေးနေမည်။", sc: { sloth: 3 } },
+                { en: "Interrupt if it serves you.", mm: "မိမိအတွက် အကျိုးရှိလျှင် ဖြတ်ပြောမည်။", sc: { greed: 3 } }
+            ]},
+            { qEn: "Your preferred workspace dynamic:", qMm: "သင်အနှစ်သက်ဆုံး လုပ်ငန်းခွင် ပတ်ဝန်းကျင်ပုံစံမှာ -", opts: [
+                { en: "Where I hold authoritative sway.", mm: "မိမိက အမိန့်နှင့် အခွင့်အာဏာ ရရှိသောနေရာ။", sc: { pride: 3 } },
+                { en: "High reward output density.", mm: "အကျိုးအမြတ် ဆုလာဘ် အလွန်မြင့်မားသောနေရာ။", sc: { greed: 3 } },
+                { en: "Low stress, flexible hours.", mm: "ဖိစီးမှုနည်းပြီး အချိန်ပြောင်းလဲရလွယ်ကူသောနေရာ။", sc: { sloth: 3 } },
+                { en: "Highly expressive, aesthetic atmosphere.", mm: "စိတ်ခံစားမှုကို ဖော်ပြနိုင်ပြီး လှပသောပတ်ဝန်းကျင်။", sc: { lust: 3 } }
+            ]},
+            { qEn: "When a luxury item goes on sale:", qMm: "ဇိမ်ခံပစ္စည်းတစ်ခု လျှော့စျေးဖြင့် ရောင်းချသောအခါ -", opts: [
+                { en: "Buy to store value.", mm: "တန်ဖိုးထိန်းသိမ်းရန် ဝယ်ယူစုဆောင်းမည်။", sc: { greed: 3 } },
+                { en: "Acquire for high societal prestige.", mm: "လူမှုပတ်ဝန်းကျင်တွင် အဆင့်အတန်းအတွက် ဝယ်မည်။", sc: { pride: 3 } },
+                { en: "Ignore unless it offers pleasure.", mm: "ပျော်ရွှင်မှုမပေးနိုင်လျှင် လျစ်လျူရှုမည်။", sc: { lust: 3 } },
+                { en: "Too lazy to verify authenticity.", mm: "စစ်မှန်မှု ရှိမရှိ စစ်ဆေးရန် ပျင်းရိနေသည်။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "How do you treat short-term criticism?", qMm: "ဝေဖန်မှုများကို မည်သို့ တုံ့ပြန်လေ့ရှိသနည်း။", opts: [
+                { en: "Dismiss it as irrelevant.", mm: "အရေးမကြီးဟု သတ်မှတ်ကာ ပယ်ချမည်။", sc: { pride: 3 } },
+                { en: "Counter-attack with equal force.", mm: "တူညီသော စွမ်းအားဖြင့် ပြန်လည်တုံ့ပြန်မည်။", sc: { wrath: 3 } },
+                { en: "Nod passively and forget it.", mm: "ခေါင်းငြိမ့်လက်ခံယောင်ဆောင်ပြီး မေ့ပစ်မည်။", sc: { sloth: 3 } },
+                { en: "Suffer silent emotional weight.", mm: "စိတ်ထဲတွင် တိတ်တဆိတ် ခံစားနေရမည်။", sc: { envy: 3 } }
+            ]},
+            { qEn: "What defines your closest friendships?", qMm: "သင်၏ အရင်းနှီးဆုံး ခင်မင်မှုများကို ဘာက သတ်မှတ်သနည်း။", opts: [
+                { en: "Mutual professional advantage.", mm: "နှစ်ဦးနှစ်ဖက် အကျိုးအမြတ် ဖြစ်ထွန်းမှု။", sc: { greed: 3 } },
+                { en: "Shared enjoyment of fine living.", mm: "ကောင်းမွန်သော ဘဝကို အတူတကွ ခံစားခြင်း။", sc: { gluttony: 3 } },
+                { en: "Absolute loyalty and shared validation.", mm: "အကြွင်းမဲ့ သစ္စာရှိမှုနှင့် အပြန်အလှန် အသိအမှတ်ပြုမှု။", sc: { pride: 3 } },
+                { en: "Zero pressure or demanding dynamics.", mm: "ဖိအား လုံးဝမရှိသော ဆက်ဆံရေးမျိုး။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "When dinner plans are delayed:", qMm: "ညစာ စားသောက်ရန် အစီအစဉ် ကြန့်ကြာသွားသောအခါ -", opts: [
+                { en: "Irritation builds in your stomach.", mm: "ဗိုက်ဆာဆာဖြင့် စိတ်တိုဒေါသထွက်လာသည်။", sc: { wrath: 3 } },
+                { en: "Order duplicate snacks instantly.", mm: "မုန့်များကို ချက်ချင်း အပိုထပ်မံမှာယူမည်။", sc: { gluttony: 3 } },
+                { en: "Wait quietly without shifting position.", mm: "နေရာမရွေ့ဘဲ ငြိမ်သက်စွာ စောင့်ဆိုင်းမည်။", sc: { sloth: 3 } },
+                { en: "Demand special priority management.", mm: "ဦးစားပေး ဆောင်ရွက်ပေးရန် တောင်းဆိုမည်။", sc: { pride: 3 } }
+            ]},
+            { qEn: "Your perspective on self-control:", qMm: "မိမိကိုယ်ကို ထိန်းချုပ်ခြင်းအပေါ် သင်၏ အမြင်မှာ -", opts: [
+                { en: "Essential to protect my crown.", mm: "မိမိ၏ ဂုဏ်သိက္ခာကို စောင့်ထိန်းရန် လိုအပ်သည်။", sc: { pride: 3 } },
+                { en: "An obstacle to pure pleasure.", mm: "စစ်မှန်သော ပျော်ရွှင်မှုကို တားဆီးသောအရာ။", sc: { lust: 3 } },
+                { en: "Easily broken during stressful hours.", mm: "ဖိစီးမှုများချိန်တွင် အလွယ်တကူ ပျက်ပြားတတ်သည်။", sc: { gluttony: 3 } },
+                { en: "Requires too much continuous effort.", mm: "စဉ်ဆက်မပြတ် အားစိုက်ထုတ်မှု အလွန်လိုသည်။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "If you observe a heated argument:", qMm: "ပြင်းထန်သော အငြင်းပွားမှုတစ်ခုကို မြင်တွေ့ရလျှင် -", opts: [
+                { en: "Intervene to command order.", mm: "အမိန့်နှင့် စနစ်တကျဖြစ်စေရန် ကြားဝင်မည်။", sc: { pride: 3 } },
+                { en: "Fuel the fire for amusement.", mm: "ပျော်ရွှင်စရာအဖြစ် မီးလောင်ရာလေပင့်လုပ်မည်။", sc: { wrath: 3 } },
+                { en: "Walk away immediately.", mm: "ချက်ချင်း ထွက်ခွာသွားမည်။", sc: { sloth: 3 } },
+                { en: "Observe to collect valuable data.", mm: "တန်ဖိုးရှိသော အချက်အလက်ရယူရန် စောင့်ကြည့်မည်။", sc: { greed: 3 } }
+            ]},
+            { qEn: "What is your relationship with status?", qMm: "အဆင့်အတန်း၊ ရာထူးဂုဏ်ရှိန်နှင့် သင်၏ ဆက်စပ်မှုမှာ -", opts: [
+                { en: "I naturally belong at top.", mm: "မိမိသည် သဘာဝအတိုင်း ထိပ်ဆုံးတွင် ရှိရမည့်သူ။", sc: { pride: 3 } },
+                { en: "A tool to secure assets.", mm: "အရင်းအမြစ်များကို ရယူရန် ကိရိယာတစ်ခု။", sc: { greed: 3 } },
+                { en: "I desire what others possess.", mm: "အခြားသူများ ပိုင်ဆိုင်သောအရာကို လိုချင်သည်။", sc: { envy: 3 } },
+                { en: "Meaningless titles that exhaust me.", mm: "ပင်ပန်းစေသော အဓိပ္ပာယ်မရှိသည့် နာမည်များ။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "When choosing clothes, you prioritize:", qMm: "ဝတ်စုံများကို ရွေးချယ်ရာတွင် သင်ဦးစားပေးသည်မှာ -", opts: [
+                { en: "Extravagant impact and elite branding.", mm: "ထူးခြားထင်ရှားပြီး အထက်တန်းကျသော တံဆိပ်။", sc: { pride: 3 } },
+                { en: "Maximum comfort and soft fabrics.", mm: "အမြင့်ဆုံး သက်သောင့်သက်သာရှိမှုနှင့် အဝတ်အထည်။", sc: { sloth: 3 } },
+                { en: "Sensual charm and magnetic pull.", mm: "ဆွဲဆောင်မှုရှိပြီး ညှို့ယူနိုင်သော ပုံစံ။", sc: { lust: 3 } },
+                { en: "Durability for long functional use.", mm: "ရေရှည်အသုံးခံမည့် ခိုင်ခံ့မှု။", sc: { greed: 3 } }
+            ]},
+            { qEn: "An authority figure barks an order:", qMm: "အာဏာပိုင်တစ်ဦးက သင့်ကို အမိန့်ပေးလိုက်သောအခါ -", opts: [
+                { en: "Resist internally with extreme hostility.", mm: "ပြင်းထန်သော ရန်လိုမှုဖြင့် စိတ်ထဲမှ တွန်းလှန်မည်။", sc: { wrath: 3 } },
+                { en: "Comply only if profitable.", mm: "အကျိုးအမြတ်ရှိမှသာ လိုက်နာမည်။", sc: { greed: 3 } },
+                { en: "Obey slowly to avoid trouble.", mm: "ပြဿနာမဖြစ်စေရန် အေးဆေးစွာ နာခံမည်။", sc: { sloth: 3 } },
+                { en: "Plan to replace them eventually.", mm: "အချိန်တန်လျှင် ၎င်းတို့နေရာကို အစားထိုးရန် ကြံစည်မည်။", sc: { pride: 3 } }
+            ]},
+            { qEn: "Your attitude toward accumulation:", qMm: "ပစ္စည်းဥစ္စာ စုဆောင်းခြင်းအပေါ် သင်၏ သဘောထားမှာ -", opts: [
+                { en: "More is always inherently better.", mm: "ပိုမိုများပြားခြင်းက အမြဲတမ်း ပိုကောင်းသည်။", sc: { greed: 3 } },
+                { en: "Only store what elevates status.", mm: "ဂုဏ်သိက္ခာကို မြှင့်တင်ပေးမည့်အရာကိုသာ သိမ်းမည်။", sc: { pride: 3 } },
+                { en: "Only stock rich culinary delights.", mm: "ကောင်းမွန်သော အစားအစာများကိုသာ စုဆောင်းမည်။", sc: { gluttony: 3 } },
+                { en: "Minimal items mean less cleanup.", mm: "ပစ္စည်းနည်းခြင်းက ရှင်းလင်းရသက်သာစေသည်။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "When your screen reveals notifications:", qMm: "သင့်ဖုန်းတွင် အကြောင်းကြားချက်များ တွေ့ရသောအခါ -", opts: [
+                { en: "Check instantly to maintain control.", mm: "ထိန်းချုပ်မှုကို ထိန်းသိမ်းရန် ချက်ချင်းစစ်ဆေးမည်။", sc: { pride: 3 } },
+                { en: "Swipe them away for later.", mm: "နောက်မှကြည့်ရန် ဘေးသို့ ဖယ်ထားမည်။", sc: { sloth: 3 } },
+                { en: "Expect opportunities or financial updates.", mm: "အခွင့်အလမ်း သို့မဟုတ် ငွေကြေးသတင်းကို မျှော်လင့်မည်။", sc: { greed: 3 } },
+                { en: "Irritated by the continuous buzzing.", mm: "ဆက်တိုက်မြည်နေခြင်းအပေါ် စိတ်အနှောင့်အယှက်ဖြစ်ရသည်။", sc: { wrath: 3 } }
+            ]},
+            { qEn: "At an open luxurious buffet feast:", qMm: "ခမ်းနားသော ဘူဖေးစားပွဲတစ်ခုသို့ ရောက်သောအခါ -", opts: [
+                { en: "Eat continuously until completely full.", mm: "ဗိုက်အပြည့် ဖြစ်သည်အထိ ဆက်တိုက်စားမည်။", sc: { gluttony: 3 } },
+                { en: "Target highest monetary value items.", mm: "တန်ဖိုးအကြီးဆုံး အစားအစာများကိုသာ ရွေးစားမည်။", sc: { greed: 3 } },
+                { en: "Let others serve me respectfully.", mm: "အခြားသူများကို မိမိအား ရိုသေစွာ တည်ခင်းခိုင်းမည်။", sc: { pride: 3 } },
+                { en: "Sit comfortably, sampling slowly.", mm: "သက်သောင့်သက်သာထိုင်ပြီး ဖြည်းဖြည်းချင်း မြည်းစမ်းမည်။", sc: { sloth: 3 } }
+            ]},
+            { qEn: "Your definitive daily ultimate target:", qMm: "သင်၏ ဘဝ နေ့စဉ် နောက်ဆုံး ရည်မှန်းချက်ပန်းတိုင်မှာ -", opts: [
+                { en: "Unshakable self-governance and absolute pride.", mm: "မလှုပ်မယှက် ကိုယ်ပိုင်အုပ်ချုပ်မှုနှင့် ဂုဏ်သိက္ခာ။", sc: { pride: 3 } },
+                { en: "Flawless financial security matrices.", mm: "အပြစ်ဆိုဖွယ်မရှိသော ငွေကြေးလုံခြုံမှု။", sc: { greed: 3 } },
+                { en: "Total preservation of serene quietude.", mm: "အေးချမ်းတည်ငြိမ်မှုကို အပြည့်အဝ ထိန်းသိမ်းခြင်း။", sc: { sloth: 3 } },
+                { en: "Dominating all evolutionary performance charts.", mm: "တိုးတက်မှုဇယားအားလုံးတွင် ထိပ်ဆုံးမှ လွှမ်းမိုးခြင်း။", sc: { wrath: 3 } }
+            ]}
+        ];
+
+        const CORE_TRAIT_MAP = {
+            pride: { en: "PRIDE", mm: "မာန (သိက္ခာစောင့်သိခြင်း)" },
+            greed: { en: "GREED", mm: "လောဘ (ပိုင်ဆိုင်လိုခြင်း)" },
+            wrath: { en: "WRATH", mm: "ဒေါသ (ပြင်းထန်စွာတုံ့ပြန်ခြင်း)" },
+            envy: { en: "ENVY", mm: "ဣဿာ (နှိုင်းယှဉ်အားကျခြင်း)" },
+            lust: { en: "LUST", mm: "တဏှာ (ဆန္ဒပြင်းပြခြင်း)" },
+            gluttony: { en: "GLUTTONY", mm: "အာသာ (အလိုလိုက်ခြင်း)" },
+            sloth: { en: "SLOTH", mm: "မောဟ (ငြိမ်းချမ်းစွာနေထိုင်ခြင်း)" }
+        };
+
+        const TRAIT_PROFILES_DATA = {
+            pride: {
+                en_analysis: "You display high affinity for internal excellence and respect. You maintain strict self-standards, driving structural group victory by example while processing emotional vectors within private parameters.",
+                mm_analysis: "သင်သည် စံနမူနာကောင်းမှုနှင့် လေးစားမှုကို အဓိကထားသူဖြစ်သည်။ မိမိကိုယ်ကို စံနှုန်းမြင့်မားစွာ သတ်မှတ်လေ့ရှိပြီး၊ စိတ်ခံစားမှုများကို ကိုယ်ပိုင်နယ်ပယ်တွင်သာ ထိန်းသိမ်းကာ အခြားသူများကို ဦးဆောင်လမ်းပြနိုင်စွမ်း ရှိသည်။",
+                en_guide: "Practice receiving validation from horizontal relationships instead of vertical validation markers. Habit: Formulate collaborative updates weekly.",
+                mm_guide: "အဆင့်အတန်း ကွာဟမှုထက် အပြန်အလှန် ယုံကြည်မှုရှိသော ပေါင်းသင်းဆက်ဆံရေးမှတစ်ဆင့် အသိအမှတ်ပြုမှုကို လက်ခံပါ။ အလေ့အကျင့် - အဖွဲ့အစည်းအတွင်း ပူးပေါင်းဆောင်ရွက်မှုကို အပတ်စဉ် မြှင့်တင်ပါ။"
+            },
+            greed: {
+                en_analysis: "Your configuration targets resource protection, strategic planning, and performance accuracy. You value preparedness, ensuring long-term systemic sustainability effectively.",
+                mm_analysis: "သင်သည် အရင်းအမြစ်များကို လုံခြုံအောင် ထိန်းသိမ်းခြင်း၊ မဟာဗျူဟာမြောက် စီစဉ်ခြင်းနှင့် တိကျသေချာမှုကို တန်ဖိုးထားသည်။ ရေရှည်တည်ငြိမ်တိုးတက်မှုကို ဖန်တီးနိုင်စွမ်း ရှိသူဖြစ်သည်။",
+                en_guide: "Dedicate spaces to experience contentment independently of output achievements. Habit: Distribute a minor uncalculated gesture weekly.",
+                mm_guide: "အောင်မြင်မှု ရလဒ်များအပြင် လက်ရှိဘဝ၏ တည်ငြိမ်မှုအပေါ် ကျေနပ်ရောင့်ရဲမှုကို ရှာဖွေပါ။ အလေ့အကျင့် - တစ်ပတ်လျှင် တစ်ကြိမ် မျှဝေပေးကမ်းခြင်းကို ပြုလုပ်ပါ။"
+            },
+            wrath: {
+                en_analysis: "You command direct passion that rejects passivity and compliance flaws. You confront barriers rapidly, translating friction directly into systemic adjustments.",
+                mm_analysis: "သင်သည် ငြိမ်သက်တုံ့ဆိုင်းနေမှုများကို လက်မခံဘဲ တက်ကြွပြတ်သားသော စွမ်းအင်ဖြင့် အရာရာကို ရင်ဆိုင်ကိုင်တွယ်တတ်သည်။ အတားအဆီးများကို လျင်မြန်စွာ ကျော်လွှားနိုင်စွမ်း ရှိသည်။",
+                en_guide: "Incorporate cognitive buffers between input triggers and tactical responses. Habit: Apply deep conscious structural breathing routines during friction events.",
+                mm_guide: "ပြဿနာများနှင့် ရင်ဆိုင်ရချိန်တွင် ချက်ချင်းတုံ့ပြန်ခြင်းမပြုမီ စိတ်ကို ဦးစွာ ထိန်းညှိပါ။ အလေ့အကျင့် - ဖိစီးမှုများသော အခြေအနေများတွင် အသက်ရှူသွင်းရှူထုတ်ကို စနစ်တကျ ပြုလုပ်ပါ။"
+            },
+            sloth: {
+                en_analysis: "Your focus prioritizes homeostasis, internal balance, and systemic peace. You avoid artificial chaos smoothly, acting as a stable, unhurried anchor during high-intensity stress patterns.",
+                mm_analysis: "သင်သည် စိတ်၏ ငြိမ်းချမ်းမှု၊ မျှတမှုနှင့် စွမ်းအင်ကို ထိန်းသိမ်းခြင်းကို အလေးထားသည်။ မလိုအပ်သော ရှုပ်ထွေးမှုများကို ရှောင်ရှားပြီး ဖိစီးမှုများသော အခြေအနေတွင် တည်ငြိမ်သော ကျောက်ဆူးတစ်ခုကဲ့သို့ နေထိုင်တတ်သည်။",
+                en_guide: "Divide major strategic tasks into hyper-incremental parts to bypass activation friction. Habit: Schedule explicit action intervals followed by planned resting.",
+                mm_guide: "ကြီးမားသော လုပ်ဆောင်ချက်များကို သေးငယ်သော အပိုင်းများအဖြစ် ခွဲခြားလုပ်ဆောင်ပါ။ အလေ့အကျင့် - တိကျသော အလုပ်လုပ်ချိန်နှင့် စနစ်တကျ အနားယူချိန်ကို ခွဲခြားသတ်မှတ်ပါ။"
+            },
+            envy: {
+                en_analysis: "You operate through deep social awareness, drawing continuous inspiration from external performance blueprints to motivate individual optimization loops.",
+                mm_analysis: "သင်သည် ပတ်ဝန်းကျင်၏ အခြေအနေများကို အစဉ်မပြတ် သတိပြုမိပြီး၊ အခြားသူများ၏ အောင်မြင်မှု လမ်းကြောင်းများမှတစ်ဆင့် မိမိကိုယ်ကို ပိုမိုကောင်းမွန်အောင် တွန်းအားပေး လုပ်ဆောင်တတ်သည်။",
+                en_guide: "Anchor your personal progression metrics on baseline individual parameters. Habit: Document three personal micro-victories daily.",
+                mm_guide: "မိမိ၏ တိုးတက်မှုများကို အခြားသူများနှင့် မနှိုင်းယှဉ်ဘဲ မိမိ၏ ယခင်အခြေအနေနှင့်သာ နှိုင်းယှဉ်ပါ။ အလေ့အကျင့် - နေ့စဉ် ကိုယ်ပိုင်အောင်မြင်မှု သေးသေးလေး ၃ ခုကို မှတ်တမ်းတင်ပါ။"
+            },
+            lust: {
+                en_analysis: "Your trajectory favors dynamic intensity, vivid emotional connections, and high-impact experiential environments. You enjoy passionate exploration.",
+                mm_analysis: "သင်သည် တက်ကြွလှုပ်ရှားမှု၊ စိတ်ခံစားမှုဆိုင်ရာ ဆက်နွှယ်မှုများနှင့် စိတ်လှုံ့ဆော်မှု မြင့်မားသော အတွေ့အကြုံများကို နှစ်သက်ပြီး ဘဝကို စိတ်အားထက်သန်စွာ စူးစမ်းလေ့လာတတ်သည်။",
+                en_guide: "Cultivate sustainable, low-intensity operational habits alongside high-vibrancy targets. Habit: Practice baseline meditation modules.",
+                mm_guide: "ပြင်းပြသော စိတ်လှုပ်ရှားမှုများအပြင် တည်ငြိမ်အေးချမ်းသော နေ့စဉ်အလေ့အထများကိုပါ မွေးမြူပါ။ အလေ့အကျင့် - တည်ငြိမ်သော တရားရှုမှတ်မှုပုံစံများကို လေ့ကျင့်ပါ။"
+            },
+            gluttony: {
+                en_analysis: "You prioritize direct abundance and sensory richness, seeking out the absolute maximum depth that life's resources can offer continuously.",
+                mm_analysis: "သင်သည် ပေါကြွယ်ဝမှုနှင့် အာုံခံစားမှုဆိုင်ရာ ပြည့်စုံမှုများကို အလေးထားပြီး၊ ဘဝ၏ အကောင်းဆုံး အရာများကို အစဉ်တစိုက် ခံစားသိရှိလိုသူ ဖြစ်သည်။",
+                en_guide: "Practice high-curation limits, enjoying subtle nuance instead of raw volume density. Habit: Isolate and pace consumption intervals consciously.",
+                mm_guide: "ပမာဏ အများအပြားထက် အရာရာ၏ သိမ်မွေ့သော အရသာနှင့် အရည်အသွေးကိုသာ အာရုံစိုက်ပါ။ အလေ့အကျင့် - စားသုံးမှုပုံစံများကို သတိရှိရှိဖြင့် ထိန်းညှိပါ။"
+            }
+        };
+
+        let activeQuestionIndex = 0;
+        let cumulativeScores = { pride: 0, greed: 0, wrath: 0, envy: 0, lust: 0, gluttony: 0, sloth: 0 };
+
+        function displayScreen(targetId) {
+            document.querySelectorAll('.app-screen').forEach(scr => scr.classList.remove('active-screen'));
+            document.getElementById(targetId).classList.add('active-screen');
+        }
+
+        function launchQuizCore() {
+            activeQuestionIndex = 0;
+            cumulativeScores = { pride: 0, greed: 0, wrath: 0, envy: 0, lust: 0, gluttony: 0, sloth: 0 };
+            displayScreen('screen-quiz');
+            renderQuestionBlock();
+        }
+
+        function renderQuestionBlock() {
+            const node = REGISTERED_QUESTIONS[activeQuestionIndex];
+            
+            // HUD text rendering
+            const nodeCounter = activeQuestionIndex + 1;
+            document.getElementById('hud-index-lbl').innerText = `REFLECTION NODE: ${nodeCounter.toString().padStart(2, '0')} / 25`;
+            
+            const completionPct = Math.floor((activeQuestionIndex / REGISTERED_QUESTIONS.length) * 100);
+            document.getElementById('hud-percent-lbl').innerText = `${completionPct}%`;
+            document.getElementById('hud-progress-bar').style.width = `${completionPct}%`;
+
+            // Inject question strings
+            document.getElementById('active-q-en').innerText = node.qEn;
+            document.getElementById('active-q-mm').innerText = node.qMm;
+
+            // Inject short answers options
+            const deck = document.getElementById('active-options-deck');
+            deck.innerHTML = '';
+            
+            node.opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-tile';
+                btn.innerHTML = `
+                    <span class="lang-en" style="font-size: 1rem; margin-bottom:1px;">${opt.en}</span>
+                    <span class="lang-mm" style="font-size: 0.82rem;">${opt.mm}</span>
+                `;
+                btn.onclick = () => logChoiceAndProceed(opt.sc);
+                deck.appendChild(btn);
+            });
+        }
+
+        function logChoiceAndProceed(scores) {
+            Object.keys(scores).forEach(k => {
+                if(cumulativeScores[k] !== undefined) cumulativeScores[k] += scores[k];
+            });
+
+            activeQuestionIndex++;
+            if(activeQuestionIndex < REGISTERED_QUESTIONS.length) {
+                renderQuestionBlock();
+            } else {
+                runAnalyticalBuffer();
+            }
+        }
+
+        function runAnalyticalBuffer() {
+            displayScreen('screen-loading');
+            setTimeout(() => {
+                compileFinalOutputs();
+            }, 1200);
+        }
+
+        function compileFinalOutputs() {
+            // Sort traits array by score
+            let sortedTraits = Object.keys(cumulativeScores).sort((a, b) => cumulativeScores[b] - cumulativeScores[a]);
+            let t1 = sortedTraits[0];
+            let t2 = sortedTraits[1];
+
+            // Render Header Titles
+            const m1 = CORE_TRAIT_MAP[t1];
+            const m2 = CORE_TRAIT_MAP[t2];
+            document.getElementById('dominant-traits-header').innerText = `${m1.en} & ${m2.en}`;
+
+            document.getElementById('badge-trait-1').innerHTML = `<span style="font-size:0.75rem; color:var(--accent-blue); font-family:monospace; display:block; margin-bottom:2px;">PRIMARY</span><span class="lang-en" style="font-size:1.1rem; margin:0;">${m1.en}</span><span class="lang-mm" style="font-size:0.8rem;">${m1.mm.split(' ')[0]}</span>`;
+            document.getElementById('badge-trait-2').innerHTML = `<span style="font-size:0.75rem; color:var(--accent-purple); font-family:monospace; display:block; margin-bottom:2px;">SECONDARY</span><span class="lang-en" style="font-size:1.1rem; margin:0;">${m2.en}</span><span class="lang-mm" style="font-size:0.8rem;">${m2.mm.split(' ')[0]}</span>`;
+
+            // Calculate aggregate sum for percentages chart
+            let sum = 0;
+            Object.keys(cumulativeScores).forEach(k => sum += cumulativeScores[k]);
+            if(sum === 0) sum = 1;
+
+            const chartTarget = document.getElementById('chart-insertion-point');
+            chartTarget.innerHTML = '';
+
+            Object.keys(cumulativeScores).forEach(k => {
+                const labelMeta = CORE_TRAIT_MAP[k];
+                const finalPct = Math.max(6, Math.floor((cumulativeScores[k] / sum) * 100));
+                
+                chartTarget.innerHTML += `
+                    <div class="stat-chart-item">
+                        <div class="stat-label-row">
+                            <span>${labelMeta.en} / ${labelMeta.mm}</span>
+                            <span>${finalPct}%</span>
+                        </div>
+                        <div style="width:100%; height:6px; background:rgba(255,255,255,0.02); border-radius:3px; overflow:hidden;">
+                            <div class="stat-fill-node" id="bar-node-${k}" data-width="${finalPct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Extract text analysis portfolios smoothly
+            const primaryProfile = TRAIT_PROFILES_DATA[t1] || TRAIT_PROFILES_DATA['pride'];
+            document.getElementById('out-analysis-en').innerText = primaryProfile.en_analysis;
+            document.getElementById('out-analysis-mm').innerText = primaryProfile.mm_analysis;
+            document.getElementById('out-guide-en').innerText = primaryProfile.en_guide;
+            document.getElementById('out-guide-mm').innerText = primaryProfile.mm_guide;
+
+            displayScreen('screen-results');
+
+            // Defer transition rendering to enable visual animation flows
+            setTimeout(() => {
+                Object.keys(cumulativeScores).forEach(k => {
+                    const el = document.getElementById(`bar-node-${k}`);
+                    if(el) el.style.width = el.getAttribute('data-width');
+                });
+            }, 60);
+        }
+
+        function revertToStart() {
+            displayScreen('screen-welcome');
+        }
+    </script>
+</body>
+</html>
